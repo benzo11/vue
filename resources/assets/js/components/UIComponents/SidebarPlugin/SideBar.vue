@@ -1,5 +1,5 @@
 <template>
-  <div :class="sidebarClasses" :data-background-color="backgroundColor" :data-active-color="activeColor">
+  <div :class="sidebarClasses" :data-background-color="backgroundColor" :data-active-color="activeColor" v-if="isLoggedIn">
     <!--
             Tip 1: you can change the color of the sidebar's background using: data-background-color="white | black | darkblue"
             Tip 2: you can change the color of the active button using the data-active-color="primary | info | success | warning | danger"
@@ -7,18 +7,19 @@
     <!-- -->
     <div class="sidebar-wrapper" id="style-3">
       <div class="logo">
-        <a href="/" class="simple-text">
-            <div class="logo-img">
-                <img src="../../../../img/vue-logo.png" alt="">
-            </div>
-          Paper Dashboard
-        </a>
+          <router-link :to="'overview'" class="simple-text brand-name">
+              <div class="logo-img">
+                  <img src="../../../../img/vue-logo.png" alt="">
+              </div>
+              Paper Dashboard
+          </router-link>
+
       </div>
       <slot>
 
       </slot>
       <ul :class="navClasses">
-          <li v-for="link in sidebarLinks">
+          <li v-for="link in sidebarLinks" v-if="isLoggedIn">
             <router-link :to="link.path" :ref="link.name">
             <i :class="link.icon"></i>
 
@@ -84,6 +85,9 @@
           return 'nav navbar-nav'
         }
       },
+      isLoggedIn () {
+          return this.$store.state.loggedIn;
+      },
       /**
        * Styles to animate the arrow near the current active sidebar link
        * @returns {{transform: string}}
@@ -124,5 +128,7 @@
 
 </script>
 <style>
-
+    .brand-name{
+        color:white !important;
+    }
 </style>

@@ -2,7 +2,7 @@
   <div data-notify="container" class="col-xs-11 col-sm-4 alert open" role="alert" :class="[verticalAlign, horizontalAlign, alertType]" :style="customPosition" data-notify-position="top-center">
     <button type="button" aria-hidden="true" class="close" data-notify="dismiss" style="position: absolute; right: 10px; top: 5px; z-index: 1033;" @click="close">×
     </button>
-    <div class="row">
+    <div class="row float-right">
       <span :class="icon" class="col-xs-1 alert-icon"></span>
       <div :class="hasIcon ? 'col-xs-8' : 'col-xs-12'">
         <slot name="message">
@@ -33,7 +33,7 @@
       },
       timeout: {
         type: Number,
-        default: 5000
+        default: 500000
       }
     },
     data () {

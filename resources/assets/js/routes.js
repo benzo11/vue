@@ -1,3 +1,6 @@
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+
 import DashboardLayout from './components/Dashboard/Layout/DashboardLayout.vue'
 // GeneralViews
 import NotFound from './components/GeneralViews/NotFoundPage.vue'
@@ -10,22 +13,34 @@ import Icons from './components/Dashboard/Views/Icons.vue'
 import Maps from './components/Dashboard/Views/Maps.vue'
 import Typography from './components/Dashboard/Views/Typography.vue'
 import TableList from './components/Dashboard/Views/TableList.vue'
+import Login from './components/UIComponents/LoginPlugin/Login.vue'
+// plugin setup
+Vue.use(VueRouter);
 
 const routes = [
     {
         path: '/',
         component: DashboardLayout,
-        redirect: '/admin/overview'
+        redirect: '/admin/overview',
+        meta: {
+            requireAuth: true
+        }
     },
     {
         path: '/admin',
         component: DashboardLayout,
         redirect: '/admin/stats',
+        meta: {
+            requireAuth: true
+        },
         children: [
             {
                 path: 'overview',
                 name: 'overview',
-                component: Overview
+                component: Overview,
+                meta: {
+                    requireAuth: true
+                }
             },
             {
                 path: 'stats',
@@ -57,18 +72,38 @@ const routes = [
                 name: 'table-list',
                 component: TableList
             }
-        ]
+        ],
     },
-    { path: '*', component: NotFound }
-]
+    {
+        path: '/login',
+        name: 'login',
+        component: Login
+    },
+    {path: '*', component: NotFound}
+];
 
-/**
- * Asynchronously load view (Webpack Lazy loading compatible)
- * The specified component must be inside the Views folder
- * @param  {string} name  the filename (basename) of the view to load.
- function view(name) {
-   var res= require('../components/Dashboard/Views/' + name + '.vue');
-   return res;
-};**/
+// configure router
+const router = new VueRouter({
+    routes,
+    linkActiveClass: 'active',
+});
 
-export default routes
+
+//check for token AUTH
+router.beforeEach((to, from, next) => {
+    let token = localStorage.getItem('token');
+
+    if (to.meta.requireAuth) {
+        if (token !== null) {
+            next();
+        } else {
+            next({
+                path: '/login'
+            });
+        }
+    } else {
+        next();
+    }
+});
+
+export default router
